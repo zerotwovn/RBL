@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deeply Embedded IoT Simulator - Fixed Power Data</title>
+    <title>Deeply Embedded IoT Simulator - Empirical Data Driven</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -87,56 +87,56 @@
 
         <div class="col-sm-12 col-md-9">
             <div class="header">
-                <h3><i class="fa fa-line-chart"></i> Kết Quả Mô Phỏng & Phân Tích Thực Nghiệm</h3>
+                <h3><i class="fa fa-line-chart"></i> Simulation Results & Empirical Analysis</h3>
             </div>
 
             <div class="col-sm-12 panel-custom">
-                <h4><i class="fa fa-dashboard"></i> Metrics Cốt Lõi So Với Baseline</h4>
+                <h4><i class="fa fa-dashboard"></i> Core Metrics vs. Baseline</h4>
                 <div class="row" style="text-align: center; margin-top: 10px;">
                     <div class="col-sm-3">
                         <p style="margin-bottom: 2px;">Fragmentation Ratio</p>
                         <div class="stat-box" id="stat-frag">57.49%</div>
-                        <p style="font-size: 11px; color: #777;">(Thấp hơn là tốt hơn)</p>
+                        <p style="font-size: 11px; color: #777;">(Lower is better)</p>
                     </div>
                     <div class="col-sm-3">
                         <p style="margin-bottom: 2px;">Execution Cycles</p>
                         <div class="stat-box" id="stat-cycle">286</div>
-                        <p style="font-size: 11px; color: #777;">(Thấp hơn là tốt hơn)</p>
+                        <p style="font-size: 11px; color: #777;">(Lower is better)</p>
                     </div>
                     <div class="col-sm-3">
                         <p style="margin-bottom: 2px;">Kernel RAM Footprint</p>
                         <div class="stat-box" id="stat-ram">0.01 kB</div>
-                        <p style="font-size: 11px; color: #777;">(Chiếm dụng hệ thống)</p>
+                        <p style="font-size: 11px; color: #777;">(System footprint)</p>
                     </div>
                     <div class="col-sm-3">
                         <p style="margin-bottom: 2px;">Power Consumption</p>
                         <div class="stat-box" id="stat-pow">350 mW</div>
-                        <p style="font-size: 11px; color: #777;">(Thấp hơn là tốt hơn)</p>
+                        <p style="font-size: 11px; color: #777;">(Lower is better)</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-sm-12 panel-custom">
-                <h4><i class="fa fa-bar-chart"></i> Tỉ lệ cải thiện so với Baseline (%)</h4>
-                <p style="font-size: 12px; color: #666; text-align: center;">(Giá trị dương (+) biểu thị sự tối ưu tốt hơn, giá trị âm (-) biểu thị sự kém hiệu quả so với Baseline)</p>
+                <h4><i class="fa fa-bar-chart"></i> Improvement Ratio vs. Baseline (%)</h4>
+                <p style="font-size: 12px; color: #666; text-align: center;">(Positive values (+) indicate better optimization, negative values (-) indicate inefficiency compared to Baseline)</p>
                 <div class="chart-container">
                     <canvas id="radarChart"></canvas>
                 </div>
             </div>
 
             <div class="col-sm-12 panel-custom">
-                <h4><i class="fa fa-terminal"></i> System Execution Log (Theo Kịch Bản)</h4>
+                <h4><i class="fa fa-terminal"></i> System Execution Log (By Scenario)</h4>
                 <table class="table-custom" id="logTable">
                     <thead>
                         <tr>
-                            <th>Bước</th>
-                            <th>Mô Tả Sự Kiện</th>
-                            <th>Chi Tiết Tài Nguyên</th>
-                            <th>Trạng Thái</th>
+                            <th>Step</th>
+                            <th>Event Description</th>
+                            <th>Resource Details</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td colspan="4">Vui lòng cấu hình và nhấn "Run Simulation".</td></tr>
+                        <tr><td colspan="4">Please configure the settings and click "Run Simulation".</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -145,7 +145,7 @@
     </div>
 
     <script>
-        // Data Library (Đã được cập nhật dữ liệu Power theo hình ảnh)
+        // Data Library (Fixed Power Data & Core Constraints)
         const db = {
             mem: {
                 buddy: { name: "Buddy Allocator", frag: 57.49, staticRam: 57.02 },
@@ -178,24 +178,23 @@
         let myChart = null;
 
         function runSimulation() {
-            // Lấy dữ liệu user chọn
+            // Retrieve user selection
             const selMem = db.mem[document.querySelector('input[name="mem"]:checked').value];
             const selCore = db.core[document.querySelector('input[name="core"]:checked').value];
             const selRtos = db.rtos[document.querySelector('input[name="rtos"]:checked').value];
             const selPow = db.pow[document.querySelector('input[name="pow"]:checked').value];
             const workload = document.getElementById("workload").value;
 
-            // --- 1. Cập nhật Stat Boxes ---
+            // --- 1. Update Stat Boxes ---
             updateStatBox('stat-frag', selMem.frag, db.mem.buddy.frag, '%', true);
             updateStatBox('stat-cycle', selCore.cycles, db.core.base.cycles, '', true);
             
             document.getElementById('stat-ram').innerText = selRtos.ram + ' kB';
-            document.getElementById('stat-ram').style.color = '#333'; // Không so sánh đỏ/xanh cho RAM
+            document.getElementById('stat-ram').style.color = '#333';
 
             updateStatBox('stat-pow', selPow.mw, db.pow.bulk.mw, ' mW', true);
 
-            // --- 2. Vẽ Biểu Đồ So Sánh ---
-            // Tính toán % tối ưu so với baseline: ((Baseline - Hiện tại) / Baseline) * 100
+            // --- 2. Render Comparative Chart ---
             let savFrag = ((db.mem.buddy.frag - selMem.frag) / db.mem.buddy.frag * 100).toFixed(1);
             let savCycle = ((db.core.base.cycles - selCore.cycles) / db.core.base.cycles * 100).toFixed(1);
             let savPow = ((db.pow.bulk.mw - selPow.mw) / db.pow.bulk.mw * 100).toFixed(1);
@@ -203,16 +202,16 @@
             const ctx = document.getElementById('radarChart').getContext('2d');
             if (myChart) myChart.destroy();
 
-            // Định dạng màu (Đỏ nếu âm, Xanh nếu dương)
+            // Format Colors (Red for negative, Green for positive)
             const getColor = (val) => val >= 0 ? 'rgba(46, 204, 113, 0.7)' : 'rgba(231, 76, 60, 0.7)';
             const getBorder = (val) => val >= 0 ? '#27ae60' : '#c0392b';
 
             myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Tối ưu Phân Mảnh (%)', 'Tốc độ Chu kỳ (%)', 'Tối ưu Năng Lượng (%)'],
+                    labels: ['Fragmentation Optimization (%)', 'Cycle Speedup (%)', 'Energy Optimization (%)'],
                     datasets: [{
-                        label: 'Mức cải thiện so với Baseline (%)',
+                        label: 'Improvement compared to Baseline (%)',
                         data: [savFrag, savCycle, savPow],
                         backgroundColor: [getColor(savFrag), getColor(savCycle), getColor(savPow)],
                         borderColor: [getBorder(savFrag), getBorder(savCycle), getBorder(savPow)],
@@ -227,7 +226,7 @@
                     },
                     scales: { 
                         y: { 
-                            title: { display: true, text: 'Phần trăm cải thiện (%)' } 
+                            title: { display: true, text: 'Improvement Percentage (%)' } 
                         } 
                     }
                 }
@@ -238,17 +237,17 @@
             let logs = [];
 
             if (workload === "A") {
-                logs.push(`<tr><td>1</td><td>Gửi yêu cầu cấp phát biến đổi liên tục</td><td>Chiến lược: ${selMem.name}</td><td>Running</td></tr>`);
-                logs.push(`<tr><td>2</td><td>Kiểm tra không gian tĩnh (SRAM)</td><td>Sử dụng: ${selMem.staticRam} kB</td><td>Pass</td></tr>`);
-                logs.push(`<tr><td>3</td><td>Đo lường sự cố (Heap Failures)</td><td>Phân mảnh: ${selMem.frag}%</td><td>${selMem.frag > 50 ? 'Cảnh báo Đỏ' : 'Ổn định'}</td></tr>`);
+                logs.push(`<tr><td>1</td><td>Send continuous variable allocation request</td><td>Strategy: ${selMem.name}</td><td>Running</td></tr>`);
+                logs.push(`<tr><td>2</td><td>Check static space (SRAM)</td><td>Usage: ${selMem.staticRam} kB</td><td>Pass</td></tr>`);
+                logs.push(`<tr><td>3</td><td>Measure allocation failures (Heap Failures)</td><td>Fragmentation: ${selMem.frag}%</td><td>${selMem.frag > 50 ? 'Critical Warning' : 'Stable'}</td></tr>`);
             } else if (workload === "B") {
-                logs.push(`<tr><td>1</td><td>Chạy Kernel DSP (Xử lý tín hiệu số)</td><td>ISA: ${selCore.name}</td><td>Running</td></tr>`);
-                logs.push(`<tr><td>2</td><td>Phân tích Pipeline Clock</td><td>Thực thi trong: ${selCore.cycles} chu kỳ</td><td>OK</td></tr>`);
-                logs.push(`<tr><td>3</td><td>Ghi nhận mức năng lượng trên tính toán</td><td>Đạt: ${selCore.gopsW} GOPS/W</td><td>${selCore.cycles < 50 ? 'Gia tốc phần cứng' : 'Phần mềm giả lập'}</td></tr>`);
+                logs.push(`<tr><td>1</td><td>Run DSP Kernel (Digital Signal Processing)</td><td>ISA: ${selCore.name}</td><td>Running</td></tr>`);
+                logs.push(`<tr><td>2</td><td>Analyze Pipeline Clock</td><td>Executed in: ${selCore.cycles} cycles</td><td>OK</td></tr>`);
+                logs.push(`<tr><td>3</td><td>Record computational energy efficiency</td><td>Achieved: ${selCore.gopsW} GOPS/W</td><td>${selCore.cycles < 50 ? 'Hardware Acceleration' : 'Software Emulation'}</td></tr>`);
             } else {
-                logs.push(`<tr><td>1</td><td>Khởi tạo Context Switch qua ngắt hệ thống</td><td>RTOS: ${selRtos.name} (RAM: ${selRtos.ram} kB)</td><td>Running</td></tr>`);
-                logs.push(`<tr><td>2</td><td>Thực thi Power Gating xuống node phần cứng</td><td>Điện áp hoạt động: ${selPow.volt} V</td><td>Gating Active</td></tr>`);
-                logs.push(`<tr><td>3</td><td>Cấu hình hệ thống rò rỉ (Leakage Baseline)</td><td>Tiêu thụ: ${selPow.mw} mW</td><td>${selPow.mw < 50 ? 'Ultra-Low Power' : 'Hao pin'}</td></tr>`);
+                logs.push(`<tr><td>1</td><td>Initiate Context Switch via system interrupt</td><td>RTOS: ${selRtos.name} (RAM: ${selRtos.ram} kB)</td><td>Running</td></tr>`);
+                logs.push(`<tr><td>2</td><td>Execute Power Gating down to hardware node</td><td>Operating Voltage: ${selPow.volt} V</td><td>Gating Active</td></tr>`);
+                logs.push(`<tr><td>3</td><td>Measure system leakage (Leakage Baseline)</td><td>Consumption: ${selPow.mw} mW</td><td>${selPow.mw < 50 ? 'Ultra-Low Power' : 'High Drain'}</td></tr>`);
             }
 
             logBody.innerHTML = logs.join("");
@@ -259,12 +258,12 @@
             el.innerText = currentValue + unit;
             
             if (currentValue === baselineValue) {
-                el.style.color = '#34495e'; // Màu trung tính cho Baseline
+                el.style.color = '#34495e'; // Neutral color for Baseline
             } else {
                 if ((lowerIsBetter && currentValue < baselineValue) || (!lowerIsBetter && currentValue > baselineValue)) {
-                    el.style.color = '#2ecc71'; // Cải thiện -> Xanh
+                    el.style.color = '#2ecc71'; // Improvement -> Green
                 } else {
-                    el.style.color = '#e74c3c'; // Tệ hơn -> Đỏ
+                    el.style.color = '#e74c3c'; // Worse -> Red
                 }
             }
         }
