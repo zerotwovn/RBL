@@ -3,105 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deeply Embedded IoT Simulator</title>
+    <title>Deeply Embedded IoT Simulator - Fixed Power Data</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            overflow-x: hidden;
-        }
-        /* Navbar Styling */
-        .navbar-inverse {
-            background-color: #222;
-            border-color: #080808;
-            border-radius: 0;
-            margin-bottom: 0;
-        }
-        .navbar-brand {
-            color: #ddd !important;
-            font-weight: bold;
-            font-size: 22px;
-        }
-        /* Sidebar Styling */
-        #sidebar {
-            background-color: #fff;
-            min-height: calc(100vh - 50px);
-            border-right: 1px solid #ccc;
-            padding: 20px 15px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-        }
-        .settings_text h4 {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 5px;
-        }
-        .reppol {
-            font-size: 13px;
-            font-weight: normal;
-            margin-bottom: 8px;
-            display: block;
-        }
-        .submit-btn {
-            width: 100%;
-            background-color: #e6e6fa;
-            border: 1px solid #b0c4de;
-            padding: 8px;
-            margin-top: 15px;
-            font-weight: bold;
-            color: #333;
-            transition: all 0.3s;
-        }
-        .submit-btn:hover {
-            background-color: #d8bfd8;
-        }
-        /* Main Area Styling */
-        .header h3 {
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-            margin-top: 20px;
-        }
-        .panel-custom {
-            background: #fff;
-            border: 1px solid #ccc;
-            margin-top: 20px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .panel-custom h4 {
-            font-weight: bold;
-            margin-top: 0;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .table-custom {
-            width: 100%;
-            margin-top: 10px;
-        }
-        .table-custom th, .table-custom td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
-        }
-        .table-custom th {
-            background-color: #f9f9f9;
-        }
-        .stat-box {
-            font-size: 18px;
-            font-weight: bold;
-            color: #d9534f;
-        }
-        .stat-good {
-            color: #5cb85c;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; overflow-x: hidden; }
+        .navbar-inverse { background-color: #2c3e50; border-color: #2c3e50; border-radius: 0; margin-bottom: 0; }
+        .navbar-brand { color: #ecf0f1 !important; font-weight: bold; font-size: 22px; }
+        #sidebar { background-color: #fff; min-height: calc(100vh - 50px); border-right: 1px solid #ccc; padding: 15px; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
+        .settings_text h4 { font-size: 14px; font-weight: bold; color: #2c3e50; margin-top: 15px; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .reppol { font-size: 12px; font-weight: normal; margin-bottom: 6px; display: block; cursor: pointer; }
+        .submit-btn { width: 100%; background-color: #3498db; border: none; padding: 10px; margin-top: 15px; font-weight: bold; color: #fff; border-radius: 4px; transition: 0.3s; }
+        .submit-btn:hover { background-color: #2980b9; }
+        .header h3 { font-weight: bold; color: #333; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 20px; font-size: 20px; }
+        .panel-custom { background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; margin-top: 15px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .panel-custom h4 { font-weight: bold; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #34495e; font-size: 15px;}
+        .table-custom { width: 100%; margin-top: 10px; font-size: 12px; }
+        .table-custom th, .table-custom td { border: 1px solid #e0e0e0; padding: 8px; text-align: center; }
+        .table-custom th { background-color: #f9f9f9; color: #333; }
+        .stat-box { font-size: 20px; font-weight: bold; color: #e74c3c; margin: 5px 0; }
+        .chart-container { position: relative; height: 320px; width: 100%; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -109,9 +31,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">IoT Resource Simulator</a>
-            </div>
-            <div class="collapse navbar-collapse">
+                <a class="navbar-brand" href="#"><i class="fa fa-microchip"></i> IoT Resource Simulator</a>
             </div>
         </div>
     </nav>
@@ -119,114 +39,104 @@
     <div style="margin-top: 50px;">
         <div class="col-sm-12 col-md-3" id="sidebar">
             <div class="settings_text">
-                <h4><i class="fa fa-microchip"></i> Memory Protection Layer</h4>
-                <label class="reppol"><input type="radio" name="memoryPolicy" value="buddy" checked> Buddy Allocator (Baseline)</label>
-                <label class="reppol"><input type="radio" name="memoryPolicy" value="tlsf"> TLSF Allocator [O(1)]</label>
-                <label class="reppol"><input type="radio" name="memoryPolicy" value="cheriot"> CHERIoT (Hardware Capability)</label>
+                <h4><i class="fa fa-database"></i> 1. Memory Strategy</h4>
+                <label class="reppol"><input type="radio" name="mem" value="buddy" checked> Buddy Allocator (Baseline)</label>
+                <label class="reppol"><input type="radio" name="mem" value="firstfit"> First Fit Allocator</label>
+                <label class="reppol"><input type="radio" name="mem" value="tlsf"> TLSF Allocator [O(1)]</label>
+                <label class="reppol"><input type="radio" name="mem" value="o1heap"> O1Heap Allocator</label>
+                <label class="reppol"><input type="radio" name="mem" value="halftree"> Half Tree Allocator</label>
             </div>
 
             <div class="settings_text">
-                <h4><i class="fa fa-cogs"></i> Custom Core Layer</h4>
-                <label class="reppol"><input type="radio" name="corePolicy" value="baseline" checked> General-Purpose RV32IM</label>
-                <label class="reppol"><input type="radio" name="corePolicy" value="tiny"> Custom Core (Tiny Variant)</label>
-                <label class="reppol"><input type="radio" name="corePolicy" value="fast"> Custom Core (Fast Variant)</label>
+                <h4><i class="fa fa-cogs"></i> 2. Processor / ISA</h4>
+                <label class="reppol"><input type="radio" name="core" value="base" checked> General-Purpose RV32IM (Base)</label>
+                <label class="reppol"><input type="radio" name="core" value="tiny"> Custom RV (Tiny Variant)</label>
+                <label class="reppol"><input type="radio" name="core" value="intermediate"> Custom RV (Intermediate Variant)</label>
+                <label class="reppol"><input type="radio" name="core" value="fast"> Custom RV (Fast Variant)</label>
             </div>
 
             <div class="settings_text">
-                <h4><i class="fa fa-tasks"></i> RTOS Scheduling Layer</h4>
-                <label class="reppol"><input type="radio" name="rtosPolicy" value="preemptive" checked> Standard Preemptive (FreeRTOS)</label>
-                <label class="reppol"><input type="radio" name="rtosPolicy" value="interaction"> Interaction-Aware Kernel</label>
+                <h4><i class="fa fa-tasks"></i> 3. RTOS / Kernel</h4>
+                <label class="reppol"><input type="radio" name="rtos" value="monolithic" checked> Monolithic OS (Baseline)</label>
+                <label class="reppol"><input type="radio" name="rtos" value="contiki"> Contiki OS</label>
+                <label class="reppol"><input type="radio" name="rtos" value="riot"> RIOT OS</label>
+                <label class="reppol"><input type="radio" name="rtos" value="freertos"> FreeRTOS Microkernel</label>
             </div>
 
             <div class="settings_text">
-                <h4><i class="fa fa-bolt"></i> Power Management Layer</h4>
-                <label class="reppol"><input type="radio" name="powerPolicy" value="bulk" checked> Traditional Bulk CMOS</label>
-                <label class="reppol"><input type="radio" name="powerPolicy" value="ntc"> Near-Threshold CMOS (NTC)</label>
-                <label class="reppol"><input type="radio" name="powerPolicy" value="pulp"> PULP Parallel Cluster</label>
+                <h4><i class="fa fa-bolt"></i> 4. Power Arch (Node)</h4>
+                <label class="reppol"><input type="radio" name="pow" value="bulk" checked> Bulk CMOS 180nm (Baseline)</label>
+                <label class="reppol"><input type="radio" name="pow" value="pampium"> PAMPIUM IC 180nm</label>
+                <label class="reppol"><input type="radio" name="pow" value="manic"> MANIC Vector 22nm</label>
+                <label class="reppol"><input type="radio" name="pow" value="ri5cy"> RISC-V Custom (RI5CY) 28nm</label>
+                <label class="reppol"><input type="radio" name="pow" value="pulp"> PULP Parallel 28nm</label>
             </div>
 
-            <hr>
+            <hr style="margin: 10px 0;">
             <div>
-                <label style="font-size: 13px;">Test Workload Type:</label>
+                <label style="font-size: 13px; font-weight: bold; color: #333;">Test Workload Type:</label>
                 <select id="workload" class="form-control input-sm">
                     <option value="A">Test Case A: Dynamic Memory Stress</option>
-                    <option value="B">Test Case B: Math Processing (FFT)</option>
-                    <option value="C">Test Case C: Idle Sleep Profiling</option>
+                    <option value="B">Test Case B: Compute-Intensive</option>
+                    <option value="C">Test Case C: Multi-Tasking / Power</option>
                 </select>
             </div>
 
             <button class="submit-btn" onclick="runSimulation()">Run Simulation</button>
-            <button class="submit-btn" style="margin-top: 5px; background-color: #f5f5f5;" onclick="resetSimulation()">Reset</button>
         </div>
 
         <div class="col-sm-12 col-md-9">
             <div class="header">
-                <h3><i class="fa fa-sliders" aria-hidden="true"></i> IoT Edge Node Simulator</h3>
+                <h3><i class="fa fa-line-chart"></i> Kết Quả Mô Phỏng & Phân Tích Thực Nghiệm</h3>
             </div>
 
             <div class="col-sm-12 panel-custom">
-                <h4><i class="fa fa-sign-in" aria-hidden="true"></i> Architecture Configuration Breakdown</h4>
-                <table class="table-custom">
-                    <thead>
-                        <tr>
-                            <th>Memory Architecture</th>
-                            <th>Core ISA Extension</th>
-                            <th>RTOS Kernel</th>
-                            <th>Power/Silicon Node</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="disp-mem">Buddy Allocator</td>
-                            <td id="disp-core">Baseline RV32IM</td>
-                            <td id="disp-rtos">Standard Preemptive</td>
-                            <td id="disp-pow">Traditional Bulk CMOS</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="col-sm-12 panel-custom">
-                <h4><i class="fa fa-bar-chart" aria-hidden="true"></i> Execution Statistics & Output</h4>
-                <div class="row" style="text-align: center; margin-top: 20px;">
+                <h4><i class="fa fa-dashboard"></i> Metrics Cốt Lõi So Với Baseline</h4>
+                <div class="row" style="text-align: center; margin-top: 10px;">
                     <div class="col-sm-3">
-                        <p>Memory Fragmentation</p>
-                        <div class="stat-box" id="stat-frag">55%</div>
-                        <p style="font-size: 11px; color: #777;">Lower is better</p>
+                        <p style="margin-bottom: 2px;">Fragmentation Ratio</p>
+                        <div class="stat-box" id="stat-frag">57.49%</div>
+                        <p style="font-size: 11px; color: #777;">(Thấp hơn là tốt hơn)</p>
                     </div>
                     <div class="col-sm-3">
-                        <p>Execution Speedup</p>
-                        <div class="stat-box stat-good" id="stat-speed">1.0x</div>
-                        <p style="font-size: 11px; color: #777;">Higher is better</p>
+                        <p style="margin-bottom: 2px;">Execution Cycles</p>
+                        <div class="stat-box" id="stat-cycle">286</div>
+                        <p style="font-size: 11px; color: #777;">(Thấp hơn là tốt hơn)</p>
                     </div>
                     <div class="col-sm-3">
-                        <p>WCRT (Response Time)</p>
-                        <div class="stat-box" id="stat-wcrt">100% (Baseline)</div>
-                        <p style="font-size: 11px; color: #777;">Lower is better</p>
+                        <p style="margin-bottom: 2px;">Kernel RAM Footprint</p>
+                        <div class="stat-box" id="stat-ram">0.01 kB</div>
+                        <p style="font-size: 11px; color: #777;">(Chiếm dụng hệ thống)</p>
                     </div>
                     <div class="col-sm-3">
-                        <p>Energy Efficiency</p>
-                        <div class="stat-box stat-good" id="stat-power">8.5 GOPS/W</div>
-                        <p style="font-size: 11px; color: #777;">Higher is better</p>
+                        <p style="margin-bottom: 2px;">Power Consumption</p>
+                        <div class="stat-box" id="stat-pow">350 mW</div>
+                        <p style="font-size: 11px; color: #777;">(Thấp hơn là tốt hơn)</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-sm-12 panel-custom">
-                <h4><i class="fa fa-table" aria-hidden="true"></i> System Execution Log</h4>
+                <h4><i class="fa fa-bar-chart"></i> Tỉ lệ cải thiện so với Baseline (%)</h4>
+                <p style="font-size: 12px; color: #666; text-align: center;">(Giá trị dương (+) biểu thị sự tối ưu tốt hơn, giá trị âm (-) biểu thị sự kém hiệu quả so với Baseline)</p>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <div class="col-sm-12 panel-custom">
+                <h4><i class="fa fa-terminal"></i> System Execution Log (Theo Kịch Bản)</h4>
                 <table class="table-custom" id="logTable">
                     <thead>
                         <tr>
-                            <th>Cycle</th>
-                            <th>Event Type</th>
-                            <th>Resource Status</th>
-                            <th>Energy Draw (mW)</th>
+                            <th>Bước</th>
+                            <th>Mô Tả Sự Kiện</th>
+                            <th>Chi Tiết Tài Nguyên</th>
+                            <th>Trạng Thái</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="4">Please configure settings and click "Run Simulation".</td>
-                        </tr>
+                        <tr><td colspan="4">Vui lòng cấu hình và nhấn "Run Simulation".</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -235,86 +145,131 @@
     </div>
 
     <script>
+        // Data Library (Đã được cập nhật dữ liệu Power theo hình ảnh)
+        const db = {
+            mem: {
+                buddy: { name: "Buddy Allocator", frag: 57.49, staticRam: 57.02 },
+                firstfit: { name: "First Fit Allocator", frag: 32.07, staticRam: 47.81 },
+                tlsf: { name: "TLSF Allocator", frag: 25.01, staticRam: 41.38 },
+                o1heap: { name: "O1Heap Allocator", frag: 111.31, staticRam: 70 },
+                halftree: { name: "Half Tree Allocator", frag: 22.08, staticRam: 40.44 }
+            },
+            core: {
+                base: { name: "General-Purpose RV32IM", cycles: 286, gopsW: 0.15 },
+                tiny: { name: "Tiny Variant", cycles: 35, gopsW: 2.35 },
+                intermediate: { name: "Intermediate Variant", cycles: 23, gopsW: 3.43 },
+                fast: { name: "Fast Variant", cycles: 17, gopsW: 5.08 }
+            },
+            rtos: {
+                monolithic: { name: "Monolithic OS", ram: 0.01, rom: 2.38 },
+                contiki: { name: "Contiki OS", ram: 1.8, rom: 29 },
+                riot: { name: "RIOT OS", ram: 1.5, rom: 5 },
+                freertos: { name: "FreeRTOS", ram: 14.55, rom: 5.75 }
+            },
+            pow: {
+                bulk: { name: "Traditional Bulk CMOS", mw: 350, volt: 1.8 },
+                pampium: { name: "PAMPIUM IC Architecture", mw: 28, volt: 1.8 },
+                manic: { name: "MANIC Vector-Dataflow", mw: 0.019, volt: 0.725 },
+                ri5cy: { name: "RISC-V Custom (RI5CY)", mw: 24.975, volt: 1.0 },
+                pulp: { name: "PULP Parallel Accel", mw: 18.42, volt: 0.85 }
+            }
+        };
+
+        let myChart = null;
+
         function runSimulation() {
-            // Get selected values
-            const mem = document.querySelector('input[name="memoryPolicy"]:checked').value;
-            const core = document.querySelector('input[name="corePolicy"]:checked').value;
-            const rtos = document.querySelector('input[name="rtosPolicy"]:checked').value;
-            const pow = document.querySelector('input[name="powerPolicy"]:checked').value;
+            // Lấy dữ liệu user chọn
+            const selMem = db.mem[document.querySelector('input[name="mem"]:checked').value];
+            const selCore = db.core[document.querySelector('input[name="core"]:checked').value];
+            const selRtos = db.rtos[document.querySelector('input[name="rtos"]:checked').value];
+            const selPow = db.pow[document.querySelector('input[name="pow"]:checked').value];
             const workload = document.getElementById("workload").value;
 
-            // 1. Update Breakdown Table
-            const memNames = { buddy: "Buddy Allocator", tlsf: "TLSF Allocator [O(1)]", cheriot: "CHERIoT Capability" };
-            const coreNames = { baseline: "Baseline RV32IM", tiny: "Custom Tiny Ext.", fast: "Custom Fast Ext." };
-            const rtosNames = { preemptive: "Standard Preemptive", interaction: "Interaction-Aware Kernel" };
-            const powNames = { bulk: "Traditional Bulk", ntc: "Near-Threshold CMOS", pulp: "PULP Parallel Cluster" };
-
-            document.getElementById("disp-mem").innerText = memNames[mem];
-            document.getElementById("disp-core").innerText = coreNames[core];
-            document.getElementById("disp-rtos").innerText = rtosNames[rtos];
-            document.getElementById("disp-pow").innerText = powNames[pow];
-
-            // 2. Calculate Statistics based on PDF Data
-            // Memory Fragmentation (Chart 1)
-            let frag = "55%"; let fragColor = "#d9534f";
-            if (mem === "tlsf") { frag = "< 12%"; fragColor = "#5cb85c"; }
-            else if (mem === "cheriot") { frag = "Secured (N/A)"; fragColor = "#5cb85c"; }
+            // --- 1. Cập nhật Stat Boxes ---
+            updateStatBox('stat-frag', selMem.frag, db.mem.buddy.frag, '%', true);
+            updateStatBox('stat-cycle', selCore.cycles, db.core.base.cycles, '', true);
             
-            // Core Speedup (Chart 2)
-            let speed = "1.0x"; let speedColor = "#777";
-            if (core === "tiny") { speed = "3.3x"; speedColor = "#5cb85c"; }
-            else if (core === "fast") { speed = "18.0x"; speedColor = "#5cb85c"; }
+            document.getElementById('stat-ram').innerText = selRtos.ram + ' kB';
+            document.getElementById('stat-ram').style.color = '#333'; // Không so sánh đỏ/xanh cho RAM
 
-            // RTOS WCRT (Chart 4)
-            let wcrt = "100% (Baseline)"; let wcrtColor = "#d9534f";
-            if (rtos === "interaction") { wcrt = "77% (-23%)"; wcrtColor = "#5cb85c"; }
+            updateStatBox('stat-pow', selPow.mw, db.pow.bulk.mw, ' mW', true);
 
-            // Power Efficiency (Chart 3)
-            let energy = "8.5 GOPS/W"; let energyColor = "#d9534f";
-            if (pow === "ntc") { energy = "59.0 GOPS/W"; energyColor = "#f0ad4e"; }
-            else if (pow === "pulp") { energy = "211.0 GOPS/W"; energyColor = "#5cb85c"; }
+            // --- 2. Vẽ Biểu Đồ So Sánh ---
+            // Tính toán % tối ưu so với baseline: ((Baseline - Hiện tại) / Baseline) * 100
+            let savFrag = ((db.mem.buddy.frag - selMem.frag) / db.mem.buddy.frag * 100).toFixed(1);
+            let savCycle = ((db.core.base.cycles - selCore.cycles) / db.core.base.cycles * 100).toFixed(1);
+            let savPow = ((db.pow.bulk.mw - selPow.mw) / db.pow.bulk.mw * 100).toFixed(1);
 
-            // Update DOM with colors
-            let eFrag = document.getElementById("stat-frag"); eFrag.innerText = frag; eFrag.style.color = fragColor;
-            let eSpeed = document.getElementById("stat-speed"); eSpeed.innerText = speed; eSpeed.style.color = speedColor;
-            let eWcrt = document.getElementById("stat-stat-wcrt") || document.getElementById("stat-wcrt"); eWcrt.innerText = wcrt; eWcrt.style.color = wcrtColor;
-            let ePow = document.getElementById("stat-power"); ePow.innerText = energy; ePow.style.color = energyColor;
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (myChart) myChart.destroy();
 
-            // 3. Generate Mock Log based on Workload
+            // Định dạng màu (Đỏ nếu âm, Xanh nếu dương)
+            const getColor = (val) => val >= 0 ? 'rgba(46, 204, 113, 0.7)' : 'rgba(231, 76, 60, 0.7)';
+            const getBorder = (val) => val >= 0 ? '#27ae60' : '#c0392b';
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tối ưu Phân Mảnh (%)', 'Tốc độ Chu kỳ (%)', 'Tối ưu Năng Lượng (%)'],
+                    datasets: [{
+                        label: 'Mức cải thiện so với Baseline (%)',
+                        data: [savFrag, savCycle, savPow],
+                        backgroundColor: [getColor(savFrag), getColor(savCycle), getColor(savPow)],
+                        borderColor: [getBorder(savFrag), getBorder(savCycle), getBorder(savPow)],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: { 
+                        y: { 
+                            title: { display: true, text: 'Phần trăm cải thiện (%)' } 
+                        } 
+                    }
+                }
+            });
+
+            // --- 3. Render Execution Log ---
             const logBody = document.querySelector("#logTable tbody");
-            logBody.innerHTML = ""; // Clear table
-            
             let logs = [];
-            if(workload === "A") {
-                logs.push(`<tr><td>001</td><td>Memory Allocation</td><td>${memNames[mem]} applied</td><td>12 mW</td></tr>`);
-                logs.push(`<tr><td>002</td><td>Packet Processing</td><td>Fragmentation level: ${frag}</td><td>15 mW</td></tr>`);
+
+            if (workload === "A") {
+                logs.push(`<tr><td>1</td><td>Gửi yêu cầu cấp phát biến đổi liên tục</td><td>Chiến lược: ${selMem.name}</td><td>Running</td></tr>`);
+                logs.push(`<tr><td>2</td><td>Kiểm tra không gian tĩnh (SRAM)</td><td>Sử dụng: ${selMem.staticRam} kB</td><td>Pass</td></tr>`);
+                logs.push(`<tr><td>3</td><td>Đo lường sự cố (Heap Failures)</td><td>Phân mảnh: ${selMem.frag}%</td><td>${selMem.frag > 50 ? 'Cảnh báo Đỏ' : 'Ổn định'}</td></tr>`);
             } else if (workload === "B") {
-                logs.push(`<tr><td>001</td><td>Start FFT Math</td><td>ISA: ${coreNames[core]}</td><td>22 mW</td></tr>`);
-                logs.push(`<tr><td>002</td><td>Execution Finish</td><td>Speedup achieved: ${speed}</td><td>${pow === 'pulp' ? '5 mW' : '28 mW'}</td></tr>`);
+                logs.push(`<tr><td>1</td><td>Chạy Kernel DSP (Xử lý tín hiệu số)</td><td>ISA: ${selCore.name}</td><td>Running</td></tr>`);
+                logs.push(`<tr><td>2</td><td>Phân tích Pipeline Clock</td><td>Thực thi trong: ${selCore.cycles} chu kỳ</td><td>OK</td></tr>`);
+                logs.push(`<tr><td>3</td><td>Ghi nhận mức năng lượng trên tính toán</td><td>Đạt: ${selCore.gopsW} GOPS/W</td><td>${selCore.cycles < 50 ? 'Gia tốc phần cứng' : 'Phần mềm giả lập'}</td></tr>`);
             } else {
-                logs.push(`<tr><td>001</td><td>Task Sleep State</td><td>RTOS: ${rtosNames[rtos]}</td><td>2 mW</td></tr>`);
-                logs.push(`<tr><td>002</td><td>Leakage Gating</td><td>Power: ${powNames[pow]}</td><td>0.5 mW</td></tr>`);
+                logs.push(`<tr><td>1</td><td>Khởi tạo Context Switch qua ngắt hệ thống</td><td>RTOS: ${selRtos.name} (RAM: ${selRtos.ram} kB)</td><td>Running</td></tr>`);
+                logs.push(`<tr><td>2</td><td>Thực thi Power Gating xuống node phần cứng</td><td>Điện áp hoạt động: ${selPow.volt} V</td><td>Gating Active</td></tr>`);
+                logs.push(`<tr><td>3</td><td>Cấu hình hệ thống rò rỉ (Leakage Baseline)</td><td>Tiêu thụ: ${selPow.mw} mW</td><td>${selPow.mw < 50 ? 'Ultra-Low Power' : 'Hao pin'}</td></tr>`);
             }
 
             logBody.innerHTML = logs.join("");
         }
 
-        function resetSimulation() {
-            document.querySelectorAll('input[type="radio"][value="buddy"], input[type="radio"][value="baseline"], input[type="radio"][value="preemptive"], input[type="radio"][value="bulk"]').forEach(el => el.checked = true);
-            document.getElementById("workload").value = "A";
-            document.querySelector("#logTable tbody").innerHTML = "<tr><td colspan='4'>Please configure settings and click 'Run Simulation'.</td></tr>";
+        function updateStatBox(id, currentValue, baselineValue, unit, lowerIsBetter) {
+            let el = document.getElementById(id);
+            el.innerText = currentValue + unit;
             
-            // Reset Stats display
-            document.getElementById("disp-mem").innerText = "-";
-            document.getElementById("disp-core").innerText = "-";
-            document.getElementById("disp-rtos").innerText = "-";
-            document.getElementById("disp-pow").innerText = "-";
-
-            document.getElementById("stat-frag").innerText = "0%"; document.getElementById("stat-frag").style.color = "#777";
-            document.getElementById("stat-speed").innerText = "0x"; document.getElementById("stat-speed").style.color = "#777";
-            document.getElementById("stat-wcrt").innerText = "0%"; document.getElementById("stat-wcrt").style.color = "#777";
-            document.getElementById("stat-power").innerText = "0 GOPS/W"; document.getElementById("stat-power").style.color = "#777";
+            if (currentValue === baselineValue) {
+                el.style.color = '#34495e'; // Màu trung tính cho Baseline
+            } else {
+                if ((lowerIsBetter && currentValue < baselineValue) || (!lowerIsBetter && currentValue > baselineValue)) {
+                    el.style.color = '#2ecc71'; // Cải thiện -> Xanh
+                } else {
+                    el.style.color = '#e74c3c'; // Tệ hơn -> Đỏ
+                }
+            }
         }
+        
+        window.onload = runSimulation;
     </script>
 </body>
 </html>
