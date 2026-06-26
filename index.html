@@ -57,8 +57,7 @@
 
             <div class="settings_text">
                 <h4><i class="fa fa-tasks"></i> 3. RTOS / Kernel</h4>
-                <label class="reppol"><input type="radio" name="rtos" value="monolithic" checked> Monolithic OS (Baseline)</label>
-                <label class="reppol"><input type="radio" name="rtos" value="contiki"> Contiki OS</label>
+                <label class="reppol"><input type="radio" name="rtos" value="contiki" checked> Contiki OS (Monolithic Baseline)</label>
                 <label class="reppol"><input type="radio" name="rtos" value="riot"> RIOT OS</label>
                 <label class="reppol"><input type="radio" name="rtos" value="freertos"> FreeRTOS Microkernel</label>
             </div>
@@ -105,7 +104,7 @@
                     </div>
                     <div class="col-sm-3">
                         <p style="margin-bottom: 2px;">Kernel RAM Footprint</p>
-                        <div class="stat-box" id="stat-ram">0.01 kB</div>
+                        <div class="stat-box" id="stat-ram">1.8 kB</div>
                         <p style="font-size: 11px; color: #777;">(System footprint)</p>
                     </div>
                     <div class="col-sm-3">
@@ -145,7 +144,7 @@
     </div>
 
     <script>
-        // Data Library (Fixed Power Data & Core Constraints)
+        // Data Library (Fixed RTOS Data based on the new image)
         const db = {
             mem: {
                 buddy: { name: "Buddy Allocator", frag: 57.49, staticRam: 57.02 },
@@ -161,10 +160,9 @@
                 fast: { name: "Fast Variant", cycles: 17, gopsW: 5.08 }
             },
             rtos: {
-                monolithic: { name: "Monolithic OS", ram: 0.01, rom: 2.38 },
-                contiki: { name: "Contiki OS", ram: 1.8, rom: 29 },
+                contiki: { name: "Contiki OS (Monolithic)", ram: 1.8, rom: 29 },
                 riot: { name: "RIOT OS", ram: 1.5, rom: 5 },
-                freertos: { name: "FreeRTOS", ram: 14.55, rom: 5.75 }
+                freertos: { name: "FreeRTOS Microkernel", ram: 0.56, rom: 4 }
             },
             pow: {
                 bulk: { name: "Traditional Bulk CMOS", mw: 350, volt: 1.8 },
